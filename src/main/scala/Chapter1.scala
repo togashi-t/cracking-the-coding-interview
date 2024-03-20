@@ -14,7 +14,7 @@ object Chapter1 extends App {
       val charSet = Array.fill(numberOfTypesCharacters)(0)
 
       @tailrec
-      def go(str: String, currentStrIndex: Int, maxStrIndex: Int): Boolean = {
+      def loop(str: String, currentStrIndex: Int, maxStrIndex: Int): Boolean = {
         if (currentStrIndex > maxStrIndex) { // 全ての文字を走査し終えた場合
           true
         } else {
@@ -24,16 +24,44 @@ object Chapter1 extends App {
             false
           } else {
             charSet(asciiValue) = 1
-            go(str, currentStrIndex + 1, maxStrIndex)
+            loop(str, currentStrIndex + 1, maxStrIndex)
           }
         }
       }
 
-      go(str, 0, str.length - 1)
+      loop(str, 0, str.length - 1)
     }
   }
 
 
-  println(isNoDuplicationStringA("abcあ"))
+  // 1-1-2
+  // 新たなデータ構造を使用しない場合
+  def isNoDuplicationStringB(str: String): Boolean = {
+    // 文字列の長さが1以下の場合は重複がないので
+    if (str.length <= 1) {
+      true
+    } else {
+      // 文字列を整列させる
+      val sortedStr = str.sorted
+
+      // 隣り合う文字列で同一のものがないか確認する。文字列の先頭から順番に2つの文字を取り出して確認。同一のものがあった時点でfalseとして終了。
+      @tailrec
+      def loop(sortedStr: String, currentHeadIndex: Int, maxHeadIndex: Int): Boolean = {
+        if (currentHeadIndex > maxHeadIndex) { // 走査完了の場合
+          true
+        } else {
+          if (sortedStr(currentHeadIndex) == sortedStr(currentHeadIndex + 1)) {
+            false
+          } else {
+            loop(sortedStr, currentHeadIndex + 1, maxHeadIndex)
+          }
+        }
+      }
+
+      loop(sortedStr, 0, sortedStr.length - 2)
+    }
+  }
+
+  println(isNoDuplicationStringB("あいうえおかきくけこ"))
 
 }
