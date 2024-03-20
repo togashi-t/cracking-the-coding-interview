@@ -111,9 +111,18 @@ object Chapter1 extends App {
   }
 
 
+  // 1-4。文字列を並び替えることによって回文作成が可能かを返す。
+  def isRearrangeableToPalindrome(str: String): Boolean = {
+    val charCountMap = str
+      .replaceAll(" ", "") // スペースは考慮の対象外なので除外
+      .toLowerCase // 大文字小文字の区別はしないので全て小文字で処理する
+      .groupBy(identity).view.mapValues(_.length).toMap // 文字毎の出現回数を集計
+    // 使用回数が奇数回の文字が1個以下の場合は回文作成が可能
+    charCountMap.values.count(_ % 2 == 1) <= 1
+  }
 
 
-  println(replaceAllSpace("Mr John Smith ", 13))
+  println(isRearrangeableToPalindrome("Aa Bb Cc d e "))
 
 
 
