@@ -62,6 +62,36 @@ object Chapter1 extends App {
     }
   }
 
-  println(isNoDuplicationStringB("あいうえおかきくけこ"))
+
+  // 1-2-0。単純に真逆に並んでいることを確認する（書籍の問題の意味はこれではなかった）
+  def isReverse(strA: String, strB: String): Boolean = {
+    // そもそも長さが異なる場合はその時点でfalse
+    val lengthOfA = strA.length
+    val lengthOfB = strB.length
+
+    if (lengthOfA != lengthOfB) {
+      false
+    } else {
+      // 一方の要素は先頭から、もう一方の要素は末尾から要素を取得し、同一であるか確認する。
+      @tailrec
+      def loop(strA: String, strB: String, currentIndex: Int, lastIndex: Int): Boolean = {
+        if (currentIndex > lastIndex) {
+          true
+        } else {
+          if (strA(currentIndex) != strB(lastIndex - currentIndex)) {
+            false
+          } else {
+            loop(strA, strB, currentIndex + 1, lastIndex)
+          }
+        }
+      }
+
+      loop(strA, strB, 0, lengthOfA - 1)
+    }
+  }
+
+  println(isReverse("abcde", "edcba"))
+
+
 
 }
