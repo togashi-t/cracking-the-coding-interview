@@ -90,7 +90,25 @@ object Chapter1 extends App {
     }
   }
 
-  println(isReverse("abcde", "edcba"))
+
+  // 1-2。2つの文字列が同じ文字で構成されているか。
+  def isSameCharacters(strA: String, strB: String): Boolean = {
+    if (strA.length != strB.length) {
+      false
+    } else {
+      // 2つの文字を構成している文字の数をまとめる
+      val strACountMap = strA.groupBy(identity).view.mapValues(_.length).toMap
+      val strBCountMap = strB.groupBy(identity).view.mapValues(_.length).toMap
+
+      strACountMap == strBCountMap
+    }
+  }
+
+
+  println(isSameCharacters("abcde", "debca"))
+
+
+
 
 
 
