@@ -226,7 +226,8 @@ object Chapter1 extends App {
 
 
 
-  // 1-7。行列を右に90度回転
+  // 行列を右に90度回転
+  // 1-7-1。要素を1回で移動先へ移動する方法。時間計算量の点で優れているが、コードが難しい。
   def rotateA(matrix: Array[Array[Int]]): Array[Array[Int]] = {
     // 1辺の長さ
     val length = matrix.length
@@ -265,7 +266,7 @@ object Chapter1 extends App {
   }
 
 
-
+  // 1-7-2。行列を入れ替えた後、列を入れ替える方法。時間計算量の点で先の方法より劣るが、コードの理解は容易。
   def rotateB(matrix: Array[Array[Int]]): Array[Array[Int]] = {
     // 1辺の長さ
     val length = matrix.length
@@ -299,14 +300,44 @@ object Chapter1 extends App {
   }
 
 
+  // 1-8。ゼロの行列
+  // 行列の初期状態でとある要素がゼロの場合、その要素と同一の行および列の全ての要素をゼロにする。
+  def spreadZero(matrix: Array[Array[Int]]): Array[Array[Int]] = {
+    // ゼロが1つでもある行または列は全てゼロになるので、当該行および列のindexを記録する。
+    val zeroRowIndexes = scala.collection.mutable.Set.empty[Int]
+    val zeroColumnIndexes = scala.collection.mutable.Set.empty[Int]
+
+    val rowCount = matrix.length
+    val columnCount = matrix(0).length
+
+    for {
+      rowIndex <- 0 until rowCount
+      columnIndex <- 0 until columnCount
+      // 行および列がゼロであることが既に決定している場合は要素の値確認をスキップする
+      if !(zeroRowIndexes.contains(rowIndex) && zeroColumnIndexes.contains(columnIndex))
+    } {
+      if (matrix(rowIndex)(columnIndex) == 0) {
+        zeroRowIndexes.add(rowIndex)
+        zeroColumnIndexes.add(columnIndex)
+      }
+    }
+
+    // ゼロにすべき行および列の要素をゼロに更新
+    for {
+      rowIndex <- 0 until rowCount
+      columnIndex <- 0 until columnCount
+      if (zeroRowIndexes.contains(rowIndex) || zeroColumnIndexes.contains(columnIndex))
+    } {
+      matrix(rowIndex)(columnIndex) = 0
+    }
+
+    matrix
+  }
 
 
 
-
-
-
-  val matrix = Array(Array(1, 2, 3), Array(4, 5, 6), Array(7, 8, 9))
-  rotateB(matrix).foreach(x => x.foreach(println))
+  val matrix = Array(Array(1, 0, 1), Array(1, 1, 1), Array(1, 1, 1))
+  spreadZero(matrix).foreach(x => x.foreach(println))
 
 
 
