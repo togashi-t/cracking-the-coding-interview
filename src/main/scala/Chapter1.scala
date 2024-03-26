@@ -300,7 +300,7 @@ object Chapter1 extends App {
   }
 
 
-  // 1-8。ゼロの行列
+  // 1-8
   // 行列の初期状態でとある要素がゼロの場合、その要素と同一の行および列の全ての要素をゼロにする。
   def spreadZero(matrix: Array[Array[Int]]): Array[Array[Int]] = {
     // ゼロが1つでもある行または列は全てゼロになるので、当該行および列のindexを記録する。
@@ -336,8 +336,19 @@ object Chapter1 extends App {
 
 
 
-  val matrix = Array(Array(1, 0, 1), Array(1, 1, 1), Array(1, 1, 1))
-  spreadZero(matrix).foreach(x => x.foreach(println))
+  // 1-9。片方の文字列がもう片方の文字列を回転させたものであるかを判定する。
+  def isRotated(str1: String, str2: String): Boolean = {
+    // 以下の関数を1回だけ使用することが設問の要件となっている
+    def isSubstring(str: String, subStr: String) = str.contains(subStr)
+
+    if (str1.length != str2.length) { // そもそも長さが異なる場合はその時点でfalse
+      false
+    } else {
+      isSubstring(str = s"${str1}${str1}", subStr = str2)
+    }
+  }
+
+  println(isRotated("waterbottle", "erbottlewat"))
 
 
 
