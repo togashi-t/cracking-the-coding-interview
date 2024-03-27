@@ -59,16 +59,24 @@ object Chapter2 extends App {
 
 
 
-  // 2-4。リストの分割。ある数xが与えられたとき、リストの要素を並び替え、xより小さいものがxよりも前方にあるようにする。
+  // リストの分割。ある数xが与えられたとき、リストの要素を並び替え、xより小さいものがxよりも前方にあるようにする。
   // 閾値を境にしてリストを分割した後結合する。
-  def partition(list: List[Int], x: Int): List[Int] = {
+  // 2-4-1
+  def partitionA(list: List[Int], x: Int): List[Int] = {
     val (lowers, uppers) = list.partition(_ < x)
     lowers ::: uppers
   }
 
+  // 2-4-2
+  def partitionB(list: List[Int], x: Int): List[Int] = {
+    val (lowers, uppers) = list.foldLeft((List.empty[Int], List.empty[Int])) { case ((tmpLowers, tmpUppers), element) =>
+      if (element < x) (element :: tmpLowers, tmpUppers) else (tmpLowers, element :: tmpUppers)
+    }
+    lowers ::: uppers
+  }
 
 
-
+  println(partitionB(List(3, 5, 8, 5, 10, 2, 1), 5))
 
 
 
