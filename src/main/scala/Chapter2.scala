@@ -1,3 +1,5 @@
+import scala.annotation.tailrec
+
 object Chapter2 extends App {
 
   // ソートされていない連結リストから重複する要素を排除
@@ -83,7 +85,7 @@ object Chapter2 extends App {
   // 例
   // 入力:(7->1->6)+(5->9->2)→617+295
   // 出力:2->1->9→912
-  def sumAdverseList(list1: List[Int], list2: List[Int]): List[Int] = {
+  def sumReverseList(list1: List[Int], list2: List[Int]): List[Int] = {
 
     def loop(remainList1: List[Int], remainList2: List[Int], carry: Int): List[Int] = {
       (remainList1, remainList2) match {
@@ -105,7 +107,32 @@ object Chapter2 extends App {
   }
 
 
-  println(sumAdverseList(List(7, 1, 6), List(5, 9, 3)))
+  // 2-6。回文であるかの判定
+  def isPalindrome[T](list: List[T]): Boolean = {
+    @tailrec
+    def loop(remainNormalList: List[T], remainReverseList: List[T]): Boolean = {
+      (remainNormalList, remainReverseList) match {
+        case (normalHead :: normalTail, reverseHead :: reverseTail) =>
+          if (normalHead == reverseHead) loop(normalTail, reverseTail) else false
+        case _ => // 最後の要素まで突合が終了した場合
+          true
+      }
+    }
+
+    loop(list, list.reverse)
+  }
+
+
+  println(isPalindrome("abcdedcba".toList))
+
+
+
+
+
+
+
+
+
 
 
 
