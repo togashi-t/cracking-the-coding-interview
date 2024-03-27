@@ -76,7 +76,38 @@ object Chapter2 extends App {
   }
 
 
-  println(partitionB(List(3, 5, 8, 5, 10, 2, 1), 5))
+  // 2-5
+  // リストで表された2数の和:各ノードの要素が1桁の数である連結リストで表された2つの数があります。
+  // 一の位がリストの先頭になるように、各位の数は逆順に並んでいます。このとき2つの数の和を求め、それを連結リストで表したものを返す関数を書いてください。
+  // リストの長さは同じとは限らない
+  // 例
+  // 入力:(7->1->6)+(5->9->2)→617+295
+  // 出力:2->1->9→912
+  def sumAdverseList(list1: List[Int], list2: List[Int]): List[Int] = {
+
+    def loop(remainList1: List[Int], remainList2: List[Int], carry: Int): List[Int] = {
+      (remainList1, remainList2) match {
+        case (Nil, Nil) =>
+          if (carry == 0) Nil else List(1)
+        case (head1 :: tail1, Nil) =>
+          val sum = head1 + carry
+          (if (sum >= 10) sum - 10 else sum) :: loop(tail1, Nil, if (sum >= 10) 1 else 0)
+        case (Nil, head2 :: tail2) =>
+          val sum = head2 + carry
+          (if (sum >= 10) sum - 10 else sum) :: loop(Nil, tail2, if (sum >= 10) 1 else 0)
+        case (head1 :: tail1, head2 :: tail2) =>
+          val sum = head1 + head2 + carry
+          (if (sum >= 10) sum - 10 else sum) :: loop(tail1, tail2, if (sum >= 10) 1 else 0)
+      }
+    }
+
+    loop(list1, list2, 0)
+  }
+
+
+  println(sumAdverseList(List(7, 1, 6), List(5, 9, 3)))
+
+
 
 
 
