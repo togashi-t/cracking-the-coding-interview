@@ -185,6 +185,34 @@ object Chapter3 extends App {
 
 
 
+  // 3-4。スタックでキュー。2つのスタックを用いたキューを実装する。
+  // pop用とpush用のスタックを用意する。
+  // push先はpopStackが空の場合のみpopStack、それ以外はpushStack。pushStackの一番上を最も古い要素とするため。
+  case class MyQueue[T](popStack: List[T] = Nil, pushStack: List[T] = Nil) {
+
+    def pop: (Option[T], MyQueue[T]) = {
+      popStack match {
+        case Nil => // 後述のとおりpopStackが空になったらpushStackから補充するので、このケースではpushStackもNilである。
+          (None, this)
+        case head :: Nil => // popによって空になったpopStackにpushStackから移す。pop効率のため順序を逆にして。
+          (Some(head), MyQueue(pushStack.reverse, Nil))
+        case head :: tail => // popStackから要素を取得するだけ
+          (Some(head), MyQueue(tail, pushStack))
+      }
+    }
+
+    def push(value: T): MyQueue[T] = if (popStack.isEmpty)
+      MyQueue(List(value), pushStack)
+    else {
+      MyQueue(popStack, value :: pushStack)
+    }
+
+  }
+
+  
+
+
+
 
 
 
