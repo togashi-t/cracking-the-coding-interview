@@ -1,3 +1,5 @@
+import scala.collection.mutable
+
 object Chapter3 extends App {
 
   // 3-1。3つのスタック
@@ -78,9 +80,10 @@ object Chapter3 extends App {
   }
 
 
-  // 3-3。複数のスタック。
-  // いくつかのスタックを持ち、スタックのデータが一杯になったらスタックを新たに作成する。
+  // 3-3。複数のスタック。 いくつかのスタックを持ち、スタックのデータが一杯になったらスタックを新たに作成する。
   // pushやpopは普通の1つのスタックのように振舞う。
+
+  // 3-3-1。通常版
   case class SetOfStacks[T](stacks: List[List[T]] = Nil, currentHeadStockSize: Int = 0) {
     // 1つのスタックに格納できる最大要素数を定義する。
     private val stackLimitSize = 3
@@ -115,6 +118,69 @@ object Chapter3 extends App {
         }
     }
 
+  }
+
+
+  // 3-3-2。発展版。指定のスタックからpopする関数がある
+  class setOfStacksB[T] {
+    // 1つのスタックに格納できる最大要素数を定義する。
+    private val stackLimitSize = 3
+
+    // 実際に値を格納するコレクション
+    private val stacks = mutable.ArrayDeque[mutable.ArrayDeque[T]]()
+
+    def push(value: T): Unit = {
+      (if (stacks.isEmpty || stacks.last.size == stackLimitSize) {
+        stacks.append(mutable.ArrayDeque[T]())
+      } else {
+        stacks
+      }).last.append(value)
+    }
+
+    def pop(): Option[T] = {
+      if (stacks.isEmpty) {
+        None
+      } else {
+        val valueOpt = stacks.last.removeLastOption()
+        // もし上記の値取出によりそのスタックが空になった場合はそのスタックを削除
+        if (stacks.last.isEmpty) stacks.removeLast()
+        valueOpt
+      }
+    }
+
+    def popAt(index: Int): Option[T] = {
+      if (index < 0 || index >= stacks.length) {
+        None
+      } else {
+        val stack = stacks(index)
+        if (stack.isEmpty) {
+          None
+        } else {
+          val valueOpt = stack.removeLastOption()
+          // 要素が空いた場所を埋める処理
+
+
+          valueOpt
+        }
+      }
+    }
+
+    // 要素が空いた場所を他の要素を詰めて埋める処理
+    private def shiftLeft(index: Int): Unit = {
+      // 指定されたインデックスのスタックから次のスタックへ要素をシフト
+      for (i <- index until stacks.length - 1) {
+        val nextStack = stacks(i + 1)
+        if (nextStack.nonEmpty) {
+          val movedValue = nextStack.removeHead()
+          stacks(i).append(movedValue)
+        }
+      }
+      // 最後のスタックが空になっていたら削除
+      if (stacks.last.isEmpty) {
+        stacks.removeLast()
+      }
+    }
+    
   }
 
 
