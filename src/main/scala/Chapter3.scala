@@ -78,9 +78,49 @@ object Chapter3 extends App {
   }
 
 
-  val stack = StackWithMin().push(3).push(5).push(3)
-  val (_, newStack) = stack.pop
-  println(s"Current Min: ${newStack.min}")
+  // 3-3。複数のスタック。
+  // いくつかのスタックを持ち、スタックのデータが一杯になったらスタックを新たに作成する。
+  // pushやpopは普通の1つのスタックのように振舞う。
+  case class SetOfStacks[T](stacks: List[List[T]] = Nil, currentHeadStockSize: Int = 0) {
+    // 1つのスタックに格納できる最大要素数を定義する。
+    private val stackLimitSize = 3
+
+    def push(value: T): SetOfStacks[T] = stacks match {
+      case Nil =>
+        SetOfStacks(List(List(value)), 1)
+      case headStack :: tailStacks =>
+        if (currentHeadStockSize == stackLimitSize) { // 先頭スタックが既に満杯の場合
+          val newStacks = List(value) :: stacks
+          SetOfStacks(newStacks, 1)
+        } else { // 先頭スタックにまだ空き容量がある場合
+          val newStacks = (value :: headStack) :: tailStacks
+          SetOfStacks(newStacks, currentHeadStockSize + 1)
+        }
+    }
+
+    // スタック自体が空のとき以外で先頭スタックが空になることは無いようにする。
+    // 空のスタックを残すと、捜査対象とすべき先頭スタックがどれなのかわからなくなってしまうので。
+    def pop: (T, SetOfStacks[T]) = stacks match {
+      case Nil =>
+        throw new Exception("Stack is empty")
+      case headStack :: tailStacks =>
+        headStack match {
+          case Nil => // 先頭スタックが空の場合
+            throw new Exception("Unexpected error")
+          case headStackHead :: Nil => // 先頭スタックに1つしか要素が存在しない場合
+            // 他のスタックが存在しない場合は、pop後のcurrentHeadStockSizeを0とする
+            (headStackHead, SetOfStacks(tailStacks, if (tailStacks.isEmpty) 0 else stackLimitSize))
+          case headStackHead :: headStackTail => // 先頭スタックに2つ以上の要素が存在する場合
+            (headStackHead, SetOfStacks(headStackTail :: tailStacks, currentHeadStockSize - 1))
+        }
+    }
+
+  }
+
+
+
+
+
 
 
 }
