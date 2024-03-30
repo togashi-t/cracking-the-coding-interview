@@ -1,3 +1,4 @@
+import scala.annotation.tailrec
 import scala.collection.mutable
 
 object Chapter3 extends App {
@@ -209,7 +210,66 @@ object Chapter3 extends App {
 
   }
 
-  
+
+  // 3-5。スタックのソート。
+  // 最も小さい項目がトップに来るスタックを並び替えるプログラムを書く。別のスタックを1つ用意してもOK。
+
+  // 実際的にはリストの並び替えと同義なので、リストの並び替えを実装する。
+  // 別のリストに降順での並び替えが完了がゴール。
+  def sortList(list: List[Int]): List[Int] = {
+    /**
+     * 並び替えを行う処理。処理概要は以下。
+     * ・mainListからsubListに値を1つずつ移していく。
+     * ・この時降順になるようにしたいので、subList先頭値未満の場合は以下を行う。
+     * 　・pendingOptに値を保持
+     * 　・subListからmainListに値を1つずつ移していく。
+     * 　・上記の際、subList先頭値がpendingの値以下となったら、pendingの値をsubListに追加する。
+     * @param mainList
+     * @param subList
+     * @param pendingOpt
+     */
+
+    @tailrec
+    def sort(mainList: List[Int], subList: List[Int], pendingOpt: Option[Int]): List[Int] = {
+      if (mainList.isEmpty && subList.isEmpty) { // そもそも並び替え対象のリストが空の場合はここに来る
+        Nil
+      } else {
+        pendingOpt match {
+          case None => // mainListからsubListに値を移す
+            mainList match {
+              case mainHead :: mainTail =>
+                subList match {
+                  case subHead :: subTail if subHead > mainHead => // 移すとsubListに降順にならない場合
+                    sort(subHead :: mainTail, subTail, Some(mainHead))
+                  case _ =>
+                    sort(mainTail, mainHead :: subList, None)
+                }
+              case Nil => // 全てsubListに移し終えた場合
+                subList
+            }
+          case Some(pending) => // pendingとの大小関係を確認の上で、subListからmainListに値を移す
+            subList match {
+              case subHead :: subTail =>
+                if (pending >= subHead) { // pending終了の場合
+                  sort(mainList, pending :: subList, None)
+                } else { // pending継続の場合
+                  sort(subHead :: mainList, subTail, Some(pending))
+                }
+              case Nil =>
+                sort(mainList, List(pending), None)
+            }
+        }
+      }
+    }
+
+    sort(list, Nil, None)
+  }
+
+
+
+
+
+
 
 
 
