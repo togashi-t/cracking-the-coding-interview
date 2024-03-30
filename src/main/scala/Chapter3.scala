@@ -213,10 +213,11 @@ object Chapter3 extends App {
 
   // 3-5。スタックのソート。
   // 最も小さい項目がトップに来るスタックを並び替えるプログラムを書く。別のスタックを1つ用意してもOK。
-
   // 実際的にはリストの並び替えと同義なので、リストの並び替えを実装する。
   // 別のリストに降順での並び替えが完了がゴール。
-  def sortList(list: List[Int]): List[Int] = {
+
+  // 3-5-1
+  def sortListA(list: List[Int]): List[Int] = {
     /**
      * 並び替えを行う処理。処理概要は以下。
      * ・mainListからsubListに値を1つずつ移していく。
@@ -267,12 +268,32 @@ object Chapter3 extends App {
 
 
 
+  // 3-5-2。再帰を使用。末尾再帰にできない部分があるので、データ量が多すぎるとスタックオーバーフローが発生する
+  def sortListB(list: List[Int]): List[Int] = {
 
+    // elementをsortedList(降順)に追加する。降順を維持するかたちで。返すのは、elementを追加した後の降順のリスト
+    def insertIntoSortedList(element: Int, sortedList: List[Int]): List[Int] = {
+      sortedList match {
+        case head :: tail =>
+          if (element >= head) element :: sortedList else head :: insertIntoSortedList(element, tail)
+        case Nil =>
+          List(element)
+      }
+    }
 
+    @tailrec
+    def sort(mainList: List[Int], sortedList: List[Int]): List[Int] = {
+      mainList match {
+        case head :: tail =>
+          val updatedSortedList = insertIntoSortedList(head, sortedList)
+          sort(tail, updatedSortedList)
+        case Nil =>
+          sortedList
+      }
+    }
 
-
-
-
+    sort(list, Nil)
+  }
 
 
 
