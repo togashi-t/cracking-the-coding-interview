@@ -26,9 +26,9 @@ object PerformanceCheck extends App {
 
 
   // todo 測定対象の処理を渡す
-  val list = (10000 to 1 by -3).toList
+
   check {
-    Chapter3.sortList(list)
+
   }
 
 }
