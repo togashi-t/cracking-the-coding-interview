@@ -298,6 +298,42 @@ object Chapter3 extends App {
   }
 
 
+  // 3-5-3。再帰を使用。設問の制約に反するが、リストを2つ使用する。
+  def sortListC(list: List[Int]): List[Int] = {
+
+    /**
+     * 要素(element)をsortedList(降順)に追加する。降順を維持するかたちで。返すのは、elementを追加した後の降順のリスト
+     * @param element
+     * @param sortedList
+     * @param shelterList 待避用のリスト。sortedListから取り出した要素を積むためのもの。
+     * @return
+     */
+    @tailrec
+    def insertIntoSortedList(element: Int, sortedList: List[Int], shelterList: List[Int]): List[Int] = {
+      sortedList match {
+        case head :: tail if element < head => // 要素をそのままsortedListへ追加するとsortされていないことになる場合
+          insertIntoSortedList(element, tail, head :: shelterList)
+        case _ => // sortedListが空になった場合、またはelementが現在のhead以上の場合
+          // shelterListの要素を反転させてelementを追加し、残りのsortedListを連結する
+          shelterList.reverse ::: (element :: sortedList)
+      }
+    }
+
+    @tailrec
+    def sort(mainList: List[Int], sortedList: List[Int]): List[Int] = {
+      mainList match {
+        case head :: tail =>
+          val updatedSortedList = insertIntoSortedList(head, sortedList, Nil)
+          sort(tail, updatedSortedList)
+        case Nil =>
+          sortedList
+      }
+    }
+
+    sort(list, Nil)
+  }
+
+
 
   // 3-6。動物保護施設
   // イヌとネコしか入ることのできない動物保護施設があります。この施設は「先入れ先出し」の操作を厳格に行います。
