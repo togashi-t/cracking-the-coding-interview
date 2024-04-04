@@ -83,6 +83,10 @@ object Chapter4 extends App {
 
 
 
+
+
+
+
   val graph: Map[Int, List[Int]] = Map(
     1 -> List(2, 3),
     2 -> List(4),
