@@ -12,6 +12,9 @@ object Question3 extends App {
   // 二分探索木が与えられたとき、同じ深さのノード同士のリストを作るアルゴリズム
   def getSameDepthList(rootNode: TreeNode): List[List[NormalNode]] = {
 
+    // 深さ毎にNormalNodeのListを作成し、このListを積み重ねていく。
+    // とある深さのNormalNodeのListから、次の深さのNormalNodeのListを生成する。
+    // この生成したListが空の場合、その深さ以降にはNormalNodeが存在しない。
     @tailrec
     def loop(acc: List[List[NormalNode]]): List[List[NormalNode]] = {
       acc match {
@@ -53,7 +56,7 @@ object Question3 extends App {
     5,
     NormalNode(
       3,
-      NormalNode(1, EmptyNode, EmptyNode),
+      NormalNode(1, NormalNode(10, EmptyNode, EmptyNode), EmptyNode),
       NormalNode(4, EmptyNode, EmptyNode)
     ),
     NormalNode(
