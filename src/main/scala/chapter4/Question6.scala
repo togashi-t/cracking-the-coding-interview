@@ -37,6 +37,6 @@ object Question6 extends App {
         else findFirstRightParent(parent.parent) // 現在のノードが親の右子である場合、親ノードの親へ探索を続ける
     }
   }
-  
+
 
 }
